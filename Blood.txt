@@ -1,0 +1,193 @@
+Create Database Blood_Donation_system;
+
+Donor Table
+Create Table Donor(DID VARCHAR(10) NOT NULL,
+                   Name VARCHAR(10) NOT NULL,
+                   Age INTEGER(10) NOT NULL,
+                   Address VARCHAR(20) NOT NULL,
+                   Blood_Group VARCHAR(10) NOT NULL,
+                   Phone VARCHAR(20) NOT NULL);
+Blood table
+create table blood(Code VARCHAR(10) NOT NULL,
+                   Blood_Group VARCHAR(10) NOT NULL,
+                   Cost VARCHAR(20) NOT NULL);  
+Nurse table
+Create table nurse(NID VARCHAR(10) NOT NULL,
+                   Name VARCHAR(10) NOT NULL,
+                   Address VARCHAR(20)NOT NULL,
+                   Phone VARCHAR(20) NOT NULL);  
+Receptionist table
+create table receptionist(RID VARCHAR(10) NOT NULL,
+                   Name VARCHAR(10) NOT NULL,
+                   Address VARCHAR(20)NOT NULL,
+                   Phone VARCHAR(20) NOT NULL);   
+Blood_bank table          
+create table blood_bank(BNO VARCHAR(10) NOT NULL,
+                   Phone VARCHAR(10) NOT NULL,
+                   Address VARCHAR(20)NOT NULL);
+Hospital table
+create table hospital(Code VARCHAR(10) NOT NULL,
+                   Name VARCHAR(10) NOT NULL,
+                   Address VARCHAR(20)NOT NULL,
+                   Phone VARCHAR(20) NOT NULL);
+Patient table
+create table patient(PID VARCHAR(10) NOT NULL,
+                   Name VARCHAR(10) NOT NULL,
+                   Age INTEGER(10) NOT NULL,
+                   Address VARCHAR(20) NOT NULL,
+                   Blood_Group VARCHAR(10) NOT NULL,
+                   Phone VARCHAR(20) NOT NULL);
+Blood Bank Manager table
+create table blood_bank_manager(MID VARCHAR(10) NOT NULL,
+                     Name VARCHAR(10) NOT NULL,
+                     Address INTEGER(10),
+                     Phone VARCHAR(20) NOT NULL,
+                     Email VARCHAR(20));
+
+-- Primary Keys
+
+ALTER TABLE blood
+   ADD CONSTRAINT 
+   PRIMARY KEY (code);
+
+ALTER TABLE blood_bank
+   ADD CONSTRAINT 
+   PRIMARY KEY (BNO);
+
+ALTER TABLE blood_bank_manager
+   ADD CONSTRAINT 
+   PRIMARY KEY (MID);
+
+ALTER TABLE donor
+   ADD CONSTRAINT 
+   PRIMARY KEY (DID);
+
+ALTER TABLE hospital
+   ADD CONSTRAINT 
+   PRIMARY KEY (code);
+
+ALTER TABLE nurse
+   ADD CONSTRAINT 
+   PRIMARY KEY (NID);
+
+ALTER TABLE patient
+   ADD CONSTRAINT 
+   PRIMARY KEY (PID);
+
+ALTER TABLE receptionist
+   ADD CONSTRAINT 
+   PRIMARY KEY (RID);
+
+----Foreign key
+
+--Blood to Donor, Nurse, Blood_banl
+drop table Blood;
+create table blood(Code VARCHAR(10) NOT NULL,
+                   Blood_Group VARCHAR(10) NOT NULL,
+                   Cost VARCHAR(20) NOT NULL,
+                   PRIMARY KEY (Code),
+                   DID VARCHAR(10),        
+                   FOREIGN KEY (DID) REFERENCES donor(DID),
+                   NID VARCHAR(10),        
+                   FOREIGN KEY (NID) REFERENCES nurse(NID),
+                   BNO VARCHAR(10),
+                   FOREIGN KEY (BNO) REFERENCES blood_bank(BNO)); 
+
+receptionist to donor,blood_bank
+drop table receptionist;
+create table receptionist(RID VARCHAR(10) NOT NULL,
+                   Name VARCHAR(10) NOT NULL,
+                   Address VARCHAR(20)NOT NULL,
+                   Phone VARCHAR(20) NOT NULL,
+                   PRIMARY KEY (RID),
+                   DID VARCHAR(10),        
+                   FOREIGN KEY (DID) REFERENCES donor(DID),
+                   BNO VARCHAR(10),
+                   FOREIGN KEY (BNO) REFERENCES blood_bank(BNO)); 
+
+
+blood_bank_manager to blood_bank
+DROP TABLE blood_bank_manager;
+create table blood_bank_manager(MID VARCHAR(10) NOT NULL,
+                     Name VARCHAR(10) NOT NULL,
+                     Address VARCHAR(10),
+                     Phone VARCHAR(20) NOT NULL,
+                     Email VARCHAR(20),
+                     PRIMARY KEY (MID),
+                     BNO VARCHAR(10),
+                     FOREIGN KEY (BNO) REFERENCES blood_bank(BNO)); 
+
+patient to blood_bank_manager
+DROP TABLE patient;
+create table patient(PID VARCHAR(10) NOT NULL,
+                   Name VARCHAR(10) NOT NULL,
+                   Age INTEGER(10) NOT NULL,
+                   Address VARCHAR(20) NOT NULL,
+                   Blood_Group VARCHAR(10) NOT NULL,
+                   Phone VARCHAR(20) NOT NULL,
+                   PRIMARY KEY (PID),
+                   MID VARCHAR(10),        
+                   FOREIGN KEY (MID) REFERENCES blood_bank_manager(MID)); 
+
+hospital to blood_bank_manager
+DROP TABLE hospital; 
+create table hospital(Code VARCHAR(10) NOT NULL,
+                   Name VARCHAR(10) NOT NULL,
+                   Address VARCHAR(20)NOT NULL,
+                   Phone VARCHAR(20) NOT NULL,
+                   PRIMARY KEY (code),
+                   MID VARCHAR(10),        
+                   FOREIGN KEY (MID) REFERENCES blood_bank_manager(MID)); 
+
+-- data
+
+INSERT INTO blood VALUES('B1','A+',500,'D1','N1','101RoktoKonika');
+INSERT INTO blood VALUES('B2','A-',700,'D2','N1','101RoktoKonika');
+INSERT INTO blood VALUES('B3','AB+',450,'D5','N2','101RoktoKonika');
+INSERT INTO blood VALUES('B4','AB-',780,'D6','N2','101RoktoKonika');
+INSERT INTO blood VALUES('B5','O+',500,'D3','N3','101RoktoKonika');
+INSERT INTO blood VALUES('B6','O-',900,'D4','N4','101RoktoKonika');
+
+INSERT INTO nurse VALUES('N1', 'Shila', 'Uttara','+09356787');
+INSERT INTO nurse VALUES('N2', 'Mili', 'Khilkhet','+09652186');
+INSERT INTO nurse VALUES('N3', 'Ratna', 'Tongi','+09236954');
+INSERT INTO nurse VALUES('N4', 'Jerin', 'Mirpur','+098423585');
+
+INSERT INTO donor VALUES('D1', 'Anis',28,'7,Uttara','A+','09265436');
+INSERT INTO donor VALUES('D2', 'Ehsan',26,'2,Gulsan','A-','09697412');
+INSERT INTO donor VALUES('D3', 'Mitu',23,'1,Kazipara','O+','092687412');
+INSERT INTO donor VALUES('D4', 'Sunil',36,'2,Mirpur','O-','091269856');
+INSERT INTO donor VALUES('D5', 'Kazi',27,'6,Banani','AB+','09479156');
+INSERT INTO donor VALUES('D6', 'Naila',25,'13,uttara','AB-','09289951');
+
+INSERT INTO blood_bank VALUES('101RoktoKonika','92468785','35,Motijhil');
+
+INSERT INTO blood_bank_manager VALUES('M101','Tarikul','3,Uttara','+38678438','tarik32@gmail.com','101RoktoKonika');
+
+
+INSERT INTO patient VALUES('P1','Roni',32,'21,Badda','A+','+0968341','M101');
+INSERT INTO patient VALUES('P2','Rana',30,'2,Gulsan','AB+','+0158748','M101');
+INSERT INTO patient VALUES('P3','Lota',22,'18,Uttara','A+','+0254783','M101');
+INSERT INTO patient VALUES('P4','Laila',27,'2,Uttara','A-','+0168498','M101');
+INSERT INTO patient VALUES('P5','Srabon',55,'27,Dhanmondi','O+','+0946879','M101');
+INSERT INTO patient VALUES('P6','Ruma',18,'7,Badda','AB-','+0976152','M101');
+INSERT INTO patient VALUES('P7','jibon',7,'17,Kajipara','O-','+0247962','M101');
+INSERT INTO patient VALUES('P8','Afrin',21,'21,Motijhil','A+','+0914862','M101');
+
+INSERT INTO hospital VALUES('H1001','Apollo','Bashundhara','+8234678','M101');
+INSERT INTO hospital VALUES('H1002','Aichi','Abdullapur','+82641123','M101');
+INSERT INTO hospital VALUES('H1003','Central Hospital Ltd','Green Road','+824251211','M101');
+INSERT INTO hospital VALUES('H1004','United Hospital Limited','Dhaka','+86841233','M101');
+INSERT INTO hospital VALUES('H1005','BIRDEM','Dhaka 1000','+875861152','M101');
+INSERT INTO hospital VALUES('H1006','CMH (Combined Military Hospital)','Dhaka 10206','+8134223','M101');
+INSERT INTO hospital VALUES('H1007','Care Zone Hospital','Dhaka 1200','+8768412522','M101');
+
+INSERT INTO receptionist VALUES('R1','Saima','Uttra','+358964','D1','101RoktoKonika');
+INSERT INTO receptionist VALUES('R2','Sathi','Mirpur','+31844232','D2','101RoktoKonika');
+INSERT INTO receptionist VALUES('R3','Hasan','Kazipara','1264523','D3','101RoktoKonika');
+INSERT INTO receptionist VALUES('R4','Jobbar','Airport','+3695852','D4','101RoktoKonika');
+INSERT INTO receptionist VALUES('R5','Nehal','banani','+65478521','D5','101RoktoKonika');
+INSERT INTO receptionist VALUES('R6','Bithi','Bissoroad','+9541266','D6','101RoktoKonika');
+
+
+
